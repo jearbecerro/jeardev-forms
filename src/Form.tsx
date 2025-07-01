@@ -1,3 +1,4 @@
+"use client"
 import React from "react";
 import { Controller, UseFormReturn } from "react-hook-form";
 import { FormValue } from "./types";
