@@ -1,8 +1,25 @@
 {
   "name": "@jeardev/forms",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Dynamic React form system with Zod validation, master schema, and custom fields.",
+  "keywords": [
+    "react",
+    "forms",
+    "dynamic-forms",
+    "zod",
+    "validation",
+    "react-hook-form",
+    "typescript"
+  ],
+  "author": "Rolando C. Becerro Jr.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jearbecerro/jeardev-forms.git"
+  },
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
   "publishConfig": {
     "access": "public"
   },
@@ -10,9 +27,6 @@
     "build": "tsup src/index.ts --format esm,cjs --dts --out-dir dist",
     "test": "jest"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "packageManager": "pnpm@10.12.2",
   "dependencies": {
     "@hookform/resolvers": "^5.1.1",
