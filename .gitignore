@@ -1,0 +1,39 @@
+# Node
+node_modules/
+dist/
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.tsbuildinfo
+
+# Output
+lib/
+build/
+coverage/
+.eslintcache
+
+# Vite/Next.js demo
+demo/dist/
+demo/.next/
+demo/.vite/
+demo/node_modules/
+
+# VS Code
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Mac
+.DS_Store
+
+# Test snapshots
+__snapshots__/
+
+# Jest coverage
+coverage/
+
+# Env files
+.env
+.env.*
