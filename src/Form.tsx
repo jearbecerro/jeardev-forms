@@ -4,7 +4,13 @@ import { Controller, UseFormReturn } from "react-hook-form";
 import { FormValue } from "./types";
 import { useFormInputRegistry } from "./context/FormInputRegistryContext";
 import { useFormConfig } from "./context/FormConfigContext";
-import { getWidthClassAndStyle } from "./utils/widthUtil";
+
+// Helper for grid col-span
+function getColSpan(width?: number) {
+  // default to 24 if not valid
+  if (!width || width < 1 || width > 24) return "col-span-24";
+  return `col-span-${width}`;
+}
 
 export interface FormProps {
   form: UseFormReturn<any>;
@@ -30,21 +36,17 @@ export const Form: React.FC<FormProps> = ({
 
   return (
     <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-md p-8">
-      <div className="flex flex-wrap gap-x-4 gap-y-6">
+      <div className="grid grid-cols-24 gap-x-4 gap-y-6">
         {Object.entries(formLayout).map(([key, layout]) => {
-          const width = layout.width ?? 24;
-          const { className: widthClass, style: widthStyle } = getWidthClassAndStyle(width);
           const error = form.formState.errors[key]?.message as string | undefined;
-          const mergedClassName = `flex flex-col min-w-[180px] ${widthClass} ${layout.className ?? ""}`;
-          const mergedStyle = { ...widthStyle, ...layout.style };
-
           if (layout.hidden?.(form.getValues())) return null;
+          const colClass = getColSpan(layout.width);
 
           return (
             <div
               key={key}
-              className={mergedClassName.trim()}
-              style={mergedStyle}
+              className={`${colClass} min-w-[180px] flex flex-col ${layout.className ?? ""}`}
+              style={layout.style}
             >
               <label
                 className={`mb-1 font-medium text-gray-700 gap-10 ${
@@ -64,37 +66,12 @@ export const Form: React.FC<FormProps> = ({
                     ? "border-red-500 focus:ring-red-400"
                     : "";
 
-                  // Try registry
-                  try {
-                    if (registry && registry[layout.type]) {
-                      const Comp = registry[layout.type];
-                      try {
-                        return (
-                          <Comp
-                            field={field}
-                            layout={layout}
-                            error={error}
-                          />
-                        );
-                      } catch (componentErr) {
-                        console.error(
-                          `Error rendering custom component for type "${layout.type}":`,
-                          componentErr
-                        );
-                        return (
-                          <span className="text-red-500 text-xs">
-                            Error in custom renderer for "{layout.type}"
-                          </span>
-                        );
-                      }
-                    }
-                  } catch (err) {
-                    console.error(
-                      `Error in registry lookup for type "${layout.type}":`,
-                      err
-                    );
+                  // Registry
+                  if (registry && registry[layout.type]) {
+                    const Comp = registry[layout.type];
+                    return <Comp field={field} layout={layout} />;
                   }
-
+                  // Built-in fallback
                   switch (layout.type) {
                     case "text":
                       return (
