@@ -1,5 +1,7 @@
 import { ReactNode, CSSProperties } from "react";
 
+export type FieldWidth = number; // 1-24, type-safe if you prefer: 1 | 2 | ... | 24
+
 export type Option = { label: string; value: string | number | boolean };
 
 export type CustomRenderProps = {
@@ -16,12 +18,12 @@ export type FormValue = Record<
   {
     className?: string;
     style?: CSSProperties;
-    type: "custom" | "text" | "checkbox" | "textarea" | "number";
+    type: "custom" | "text" | "checkbox" | "textarea" | "number" | string;
     label?: string;
     readOnly?: boolean;
     initialValue?: any;
     placeholder?: string;
-    width?: number;
+    width?: FieldWidth;
     minRows?: number;
     mode?: "multiple" | "tags" | "default";
     options?: Option[];
