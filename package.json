@@ -1,6 +1,6 @@
 {
   "name": "@jeardev/forms",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Dynamic React form system with Zod validation, master schema, and custom fields.",
   "keywords": [
     "react",
