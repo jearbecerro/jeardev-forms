@@ -1,7 +1,7 @@
 import React, { createContext, useContext } from "react";
 import { FieldValues, ControllerRenderProps } from "react-hook-form";
 
-type CustomFieldComponent = React.FC<{
+export type CustomFieldComponent = React.FC<{
   field: ControllerRenderProps<FieldValues, string>;
   layout: any;
   error?: string;

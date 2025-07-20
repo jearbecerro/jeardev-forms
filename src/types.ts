@@ -20,6 +20,7 @@ export type FormValue = Record<
     style?: CSSProperties;
     type: "custom" | "text" | "checkbox" | "textarea" | "number" | string;
     label?: string;
+    required?: boolean;
     readOnly?: boolean;
     initialValue?: any;
     placeholder?: string;

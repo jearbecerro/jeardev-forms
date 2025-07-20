@@ -1,32 +1,53 @@
+"use client";
 import React from "react";
 import { z } from "zod";
-import { Form, useForm, FormValue } from ".."; // or "@jeardev/forms"
+import { Form, useForm, FormValue } from ".."; // Or "@jeardev/forms"
 import { FormConfigProvider } from "../context/FormConfigContext";
 import { FormInputRegistryProvider, InputRegistry } from "../context/FormInputRegistryContext";
 
-/** --- Tailwind-styled Input Components for Registry --- **/
+/** --- Demo Visual Styling --- **/
+const inputDemoBox =
+  "bg-blue-50 border-blue-300 border rounded-lg p-2 mb-2 shadow-sm";
+
+// Shows width below each input (for demo)
+const FieldWidthBadge: React.FC<{ width?: number }> = ({ width }) =>
+  width ? (
+    <span className="text-xs text-blue-600 mt-1 block text-right">
+      (width: {width} of 24)
+    </span>
+  ) : null;
+
+// Registry components
 const StyledInput: React.FC<any> = ({ field, layout, error }) => (
-  <input
-    {...field}
-    type={layout.type === "number" ? "number" : "text"}
-    placeholder={layout.placeholder}
-    className={`block w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-500 ${error ? "border-red-500" : ""}`}
-    readOnly={!!layout.readOnly}
-  />
+  <div className={inputDemoBox}>
+    <input
+      {...field}
+      type={layout.type === "number" ? "number" : "text"}
+      placeholder={layout.placeholder}
+      className={`block w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-500 ${error ? "border-red-500" : ""}`}
+      readOnly={!!layout.readOnly}
+    />
+    <FieldWidthBadge width={layout.width} />
+    {error && <div className="text-red-500 text-xs mt-1">{error}</div>}
+  </div>
 );
 
 const StyledTextarea: React.FC<any> = ({ field, layout, error }) => (
-  <textarea
-    {...field}
-    placeholder={layout.placeholder}
-    className={`block w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-500 resize-y min-h-[80px] ${error ? "border-red-500" : ""}`}
-    readOnly={!!layout.readOnly}
-    rows={layout.minRows ?? 3}
-  />
+  <div className={inputDemoBox}>
+    <textarea
+      {...field}
+      placeholder={layout.placeholder}
+      className={`block w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-500 resize-y min-h-[80px] ${error ? "border-red-500" : ""}`}
+      readOnly={!!layout.readOnly}
+      rows={layout.minRows ?? 3}
+    />
+    <FieldWidthBadge width={layout.width} />
+    {error && <div className="text-red-500 text-xs mt-1">{error}</div>}
+  </div>
 );
 
-const StyledCheckbox: React.FC<any> = ({ field, layout }) => (
-  <label className="inline-flex items-center mt-2">
+const StyledCheckbox: React.FC<any> = ({ field, layout, error }) => (
+  <div className={inputDemoBox + " flex items-center"}>
     <input
       type="checkbox"
       checked={!!field.value}
@@ -35,25 +56,31 @@ const StyledCheckbox: React.FC<any> = ({ field, layout }) => (
       readOnly={!!layout.readOnly}
     />
     <span className="ml-2 text-gray-700">{layout.label || layout.placeholder}</span>
-  </label>
+    <FieldWidthBadge width={layout.width} />
+    {error && <div className="text-red-500 text-xs mt-1">{error}</div>}
+  </div>
 );
 
 const StyledSelect: React.FC<any> = ({ field, layout, error }) => (
-  <select
-    {...field}
-    className={`block w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-500 ${error ? "border-red-500" : ""}`}
-    disabled={!!layout.readOnly}
-  >
-    <option value="">{layout.placeholder || "Select..."}</option>
-    {(layout.options ?? []).map((opt: { value: string; label: string }) =>
-      <option value={opt.value} key={opt.value}>{opt.label}</option>
-    )}
-  </select>
+  <div className={inputDemoBox}>
+    <select
+      {...field}
+      className={`block w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-500 ${error ? "border-red-500" : ""}`}
+      disabled={!!layout.readOnly}
+    >
+      <option value="">{layout.placeholder || "Select..."}</option>
+      {(layout.options ?? []).map((opt: { value: string; label: string }) =>
+        <option value={opt.value} key={opt.value}>{opt.label}</option>
+      )}
+    </select>
+    <FieldWidthBadge width={layout.width} />
+    {error && <div className="text-red-500 text-xs mt-1">{error}</div>}
+  </div>
 );
 
 // Custom registry field: Fruit picker
 const FruitSelect: React.FC<any> = ({ field, layout, error }) => (
-  <div>
+  <div className={inputDemoBox}>
     <label className="mb-1 block">{layout.label}</label>
     <select
       className={`border rounded-lg px-3 py-2 w-full ${error ? "border-red-500" : "border-gray-300"}`}
@@ -65,6 +92,7 @@ const FruitSelect: React.FC<any> = ({ field, layout, error }) => (
         <option key={opt.value} value={opt.value}>{opt.label}</option>
       ))}
     </select>
+    <FieldWidthBadge width={layout.width} />
     {error && <div className="text-red-500 text-xs mt-1">{error}</div>}
   </div>
 );
@@ -81,24 +109,58 @@ const registry: InputRegistry = {
 
 /** --- Demo Layouts --- **/
 
-// For registry-based demo
 const fruitOptions = [
   { label: "Banana", value: "banana" },
   { label: "Apple", value: "apple" },
   { label: "Mango", value: "mango" }
 ];
 
+// For registry-based demo
+const registryLayout: FormValue = {
+  fruitChoice: {
+    type: "fruit",
+    label: "Choose your favorite fruit (width: 12)",
+    initialValue: "",
+    width: 12,
+    options: fruitOptions,
+  },
+  likesFruit: {
+    type: "checkbox",
+    label: "I like fruit (width: 12)",
+    initialValue: false,
+    width: 12,
+  },
+  selectExample: {
+    type: "select",
+    label: "Generic Select Example (width: 24)",
+    initialValue: "",
+    width: 24,
+    options: [
+      { label: "Option A", value: "A" },
+      { label: "Option B", value: "B" },
+    ],
+  },
+};
+
+// Zod for registryLayout
+const registrySchema = z.object({
+  fruitChoice: z.enum(["banana", "apple", "mango"], { errorMap: () => ({ message: "Pick a fruit!" }) }),
+  likesFruit: z.boolean().refine(v => v === true, { message: "You must like fruit" }),
+  selectExample: z.enum(["A", "B"], { errorMap: () => ({ message: "Choose one!" }) }),
+});
+
 // Standard layout using built-in and custom inline
 const demoLayout: FormValue = {
-  email: { type: "text", label: "Email", initialValue: "" },
-  age: { type: "number", label: "Age", initialValue: 18 },
-  about: { type: "textarea", label: "About yourself", initialValue: "" },
+  email: { type: "text", label: "Email (width: 24)", initialValue: "", width: 24 },
+  age: { type: "number", label: "Age (width: 12)", initialValue: 18, width: 12 },
+  about: { type: "textarea", label: "About yourself (width: 12)", initialValue: "", width: 12 },
   favoriteColor: {
     type: "custom",
-    label: "Favorite Color",
+    label: "Favorite Color (width: 24)",
     initialValue: "",
+    width: 24,
     render: ({ value, setValue, label }) => (
-      <div>
+      <div className={inputDemoBox}>
         <label className="mb-1 block">{label}</label>
         <select
           className="border rounded px-3 py-2 w-full"
@@ -111,10 +173,11 @@ const demoLayout: FormValue = {
           <option value="blue">Blue</option>
           <option value="orange">Orange</option>
         </select>
+        <FieldWidthBadge width={24} />
       </div>
     ),
   },
-  agreed: { type: "checkbox", label: "Agree to terms", initialValue: false },
+  agreed: { type: "checkbox", label: "Agree to terms (width: 24)", initialValue: false, width: 24 },
 };
 
 // Zod for demoLayout
@@ -128,34 +191,6 @@ const demoSchema = z.object({
   agreed: z.literal(true, { errorMap: () => ({ message: "Must agree to terms" }) }),
 });
 
-// Registry-based layout
-const registryLayout: FormValue = {
-  fruitChoice: {
-    type: "fruit",
-    label: "Choose your favorite fruit",
-    initialValue: "",
-    width: 12,
-    options: fruitOptions,
-  },
-  likesFruit: { type: "checkbox", label: "I like fruit", initialValue: false, width: 12 },
-  selectExample: {
-    type: "select",
-    label: "Generic Select Example",
-    initialValue: "",
-    width: 24,
-    options: [
-      { label: "Option A", value: "A" },
-      { label: "Option B", value: "B" },
-    ],
-  },
-};
-
-const registrySchema = z.object({
-  fruitChoice: z.enum(["banana", "apple", "mango"], { errorMap: () => ({ message: "Pick a fruit!" }) }),
-  likesFruit: z.boolean().refine(v => v === true, { message: "You must like fruit" }),
-  selectExample: z.enum(["A", "B"], { errorMap: () => ({ message: "Choose one!" }) }),
-});
-
 /** --- Main Demo Component --- **/
 export default function Demo() {
   const demoForm = useForm(demoLayout, demoSchema);
@@ -164,18 +199,16 @@ export default function Demo() {
   return (
     <FormConfigProvider config={{ labelPosition: "left", inputClassName: "focus:ring-primary-500" }}>
       <FormInputRegistryProvider registry={registry}>
-        <div className="max-w-xl mx-auto mt-8 flex flex-col gap-16">
+        <div>
+          <h2 className="text-xl font-bold mb-4">1. Standard Form (with Inline Custom Field)</h2>
+          <Form
+            form={demoForm}
+            formLayout={demoLayout}
+            showSubmitButton
+            onSubmit={data => alert("Demo Form:\n" + JSON.stringify(data, null, 2))}
+          />
           <div>
-            <h2 className="text-xl font-bold mb-4">1. Standard Form (with Inline Custom Field)</h2>
-            <Form
-              form={demoForm}
-              formLayout={demoLayout}
-              showSubmitButton
-              onSubmit={data => alert("Demo Form:\n" + JSON.stringify(data, null, 2))}
-            />
-          </div>
-          <div>
-            <h2 className="text-xl font-bold mb-4">2. Registry-based Custom Inputs (All Styled!)</h2>
+            <h2 className="text-xl font-bold mb-4">2. Registry-based Custom Inputs (With Column Widths)</h2>
             <Form
               form={registryForm}
               formLayout={registryLayout}
